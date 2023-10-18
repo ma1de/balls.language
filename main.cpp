@@ -8,7 +8,7 @@ using namespace std;
 
 #define ULL unsigned long long
 
-typedef enum class TokenType {
+enum class TokenType {
     FORWARD,
     BACKWARD,
     FORWARD_HALF,
