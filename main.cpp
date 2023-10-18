@@ -4,6 +4,7 @@ using namespace std;
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include <ctype.h>
 
 #define ULL unsigned long long
 
@@ -13,11 +14,13 @@ typedef enum class TokenType {
     FORWARD_HALF,
     BACKWARD_HALF,
     SQUARE,
-    SQUARE_ROOT
+    SQUARE_ROOT,
+    DIGIT
 };
 
 typedef struct {
     TokenType type;
+    int value;
 } Token;
 
 vector<Token> tokenize(string code) {
@@ -68,6 +71,14 @@ vector<Token> tokenize(string code) {
             continue;
         }
 
+        if (isdigit(code.at(i))) {
+            token.type = TokenType::DIGIT;
+            token.value = code.at(i) - '0';
+
+            tokens.push_back(token);
+            continue;
+        }
+
         cerr << "UNEXPECTED SYMBOL AT " << code.at(i) << " SHUTTING DOWN" << endl;
         exit(404);
     }
@@ -94,6 +105,20 @@ int count(vector<Token> tokens, TokenType type) {
     }
 } 
 
+vector<int> getAllDigits(vector<Token> tokens) {
+    vector<int> digits;
+
+    for (Token token : tokens) {
+        if (token.type != TokenType::DIGIT) {
+            continue;
+        }
+
+        digits.push_back(token.value);
+    }
+
+    return digits;
+}
+
 ULL tokens_to_output(vector<Token> tokens) {
     int output = 0;
 
@@ -112,6 +137,14 @@ ULL tokens_to_output(vector<Token> tokens) {
 
     if (squareRoot > 0) {
         output = sqrt(output);
+    }
+
+    if (getAllDigits(tokens).size() > 0) {
+        vector<int> digits = getAllDigits(tokens);
+
+        for (int i : digits) {
+            output += i;
+        }
     }
 
     return output;
