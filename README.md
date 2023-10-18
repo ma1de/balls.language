@@ -8,7 +8,8 @@ idk lol
 ":" - backward by 0.5 <br/>
 "^" - the whole number to the power of n, where n is equal to the amount of the ^ symbols <br/>
 "[" - square root of the whole number <br/>
-"1" - digit 
+"1" - digit <br/>
+"|" - space 
 
 # example
 [here](https://github.com/ma1de/balls.language/blob/main/code.abd)
