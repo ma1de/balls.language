@@ -1,0 +1,21 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: install gcc idk
+      run: sudo apt install gcc
+    - name: make
+      run: g++ main.cpp
+    - name: make check
+      run: ./a.out
