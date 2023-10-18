@@ -3,10 +3,17 @@ using namespace std;
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <cmath>
+
+#define ULL unsigned long long
 
 typedef enum class TokenType {
     FORWARD,
-    BACKWARD
+    BACKWARD,
+    FORWARD_HALF,
+    BACKWARD_HALF,
+    SQUARE,
+    SQUARE_ROOT
 };
 
 typedef struct {
@@ -17,8 +24,9 @@ vector<Token> tokenize(string code) {
     vector<Token> tokens;
 
     for (int i = 0; i < code.length(); i++) {
+        Token token;
+
         if (code.at(i) == '>') {
-            Token token;
             token.type = TokenType::FORWARD;
 
             tokens.push_back(token);
@@ -26,8 +34,35 @@ vector<Token> tokenize(string code) {
         }
 
         if (code.at(i) == '<') {
-            Token token;
             token.type = TokenType::BACKWARD;
+
+            tokens.push_back(token);
+            continue;
+        }
+
+        if (code.at(i) == ';') {
+            token.type = TokenType::FORWARD_HALF;
+
+            tokens.push_back(token);
+            continue;
+        }
+
+        if (code.at(i) == ':') {
+            token.type = TokenType::BACKWARD_HALF;
+
+            tokens.push_back(token);
+            continue;
+        }
+
+        if (code.at(i) == '^') {
+            token.type = TokenType::SQUARE;
+
+            tokens.push_back(token);
+            continue;
+        }
+
+        if (code.at(i) == '[') {
+            token.type = TokenType::SQUARE_ROOT;
 
             tokens.push_back(token);
             continue;
@@ -40,14 +75,44 @@ vector<Token> tokenize(string code) {
     return tokens;
 }
 
-int tokens_to_output(vector<Token> tokens) {
+int count(vector<Token> tokens, TokenType type) {
+    switch (type) {
+        case TokenType::FORWARD:
+            return count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::FORWARD; });
+        case TokenType::BACKWARD:
+            return count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::BACKWARD; });
+        case TokenType::FORWARD_HALF:
+            return count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::FORWARD_HALF; });
+        case TokenType::BACKWARD_HALF:
+            return count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::BACKWARD_HALF; });
+        case TokenType::SQUARE:
+            return count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::SQUARE; });
+        case TokenType::SQUARE_ROOT:
+            return count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::SQUARE_ROOT; });
+        default:
+            return 0;
+    }
+} 
+
+ULL tokens_to_output(vector<Token> tokens) {
     int output = 0;
 
-    int forward = count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::FORWARD; });
-    int backward = count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::BACKWARD; });
+    int forward = count(tokens, TokenType::FORWARD);
+    int backward = count(tokens, TokenType::BACKWARD);
+    int forwardHalf = count(tokens, TokenType::FORWARD_HALF) / 2;
+    int backwardHalf = count(tokens, TokenType::BACKWARD_HALF) / 2;
+    int square = count(tokens, TokenType::SQUARE);
+    int squareRoot = count(tokens, TokenType::SQUARE_ROOT);
 
-    output += forward;
-    output -= backward;
+    output = (forward + forwardHalf) - (backward + backwardHalf);
+
+    if (square > 0) {
+        output = pow(output, square);
+    }
+
+    if (squareRoot > 0) {
+        output = sqrt(output);
+    }
 
     return output;
 }
