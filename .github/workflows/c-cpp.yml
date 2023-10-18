@@ -19,7 +19,3 @@ jobs:
       run: g++ main.cpp
     - name: make check
       run: ./a.out
-    - name: hah
-      run: sudo apt install neofetch
-    - name: lol
-      run: neofetch
