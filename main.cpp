@@ -1,12 +1,10 @@
-using namespace std;
+#include <iostream>
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <algorithm>
 #include <cmath>
 #include <ctype.h>
-
-#define ULL unsigned long long
 
 enum class TokenType {
     FORWARD,
@@ -24,59 +22,47 @@ typedef struct {
     int value;
 } Token;
 
-vector<Token> tokenize(string code) {
-    vector<Token> tokens;
+struct SyntaxToken {
+    TokenType type;
+    char value;
+
+    SyntaxToken(){};
+
+    SyntaxToken(TokenType init_type, char init_value) {
+        type = init_type;
+        value = init_value;
+    };
+};
+
+std::vector<SyntaxToken> syntaxTokens = {
+    SyntaxToken(TokenType::FORWARD, '>'),
+    SyntaxToken(TokenType::BACKWARD, '<'),
+    SyntaxToken(TokenType::FORWARD_HALF, ';'),
+    SyntaxToken(TokenType::BACKWARD_HALF, ':'),
+    SyntaxToken(TokenType::SQUARE, '^'),
+    SyntaxToken(TokenType::SQUARE_ROOT, '['),
+    SyntaxToken(TokenType::SPACE, '|')
+};
+
+std::vector<Token> tokenize(std::string code) {
+    std::vector<Token> tokens;
+
+    bool noneMatch;
 
     for (int i = 0; i < code.length(); i++) {
         Token token;
 
-        if (code.at(i) == '>') {
-            token.type = TokenType::FORWARD;
+        for (SyntaxToken syntaxToken: syntaxTokens) {
+            if (code.at(i) != syntaxToken.value) {
+                noneMatch = true;
+                continue;
+            }
+
+            token.type = syntaxToken.type;
 
             tokens.push_back(token);
-            continue;
-        }
-
-        if (code.at(i) == '<') {
-            token.type = TokenType::BACKWARD;
-
-            tokens.push_back(token);
-            continue;
-        }
-
-        if (code.at(i) == ';') {
-            token.type = TokenType::FORWARD_HALF;
-
-            tokens.push_back(token);
-            continue;
-        }
-
-        if (code.at(i) == ':') {
-            token.type = TokenType::BACKWARD_HALF;
-
-            tokens.push_back(token);
-            continue;
-        }
-
-        if (code.at(i) == '^') {
-            token.type = TokenType::SQUARE;
-
-            tokens.push_back(token);
-            continue;
-        }
-
-        if (code.at(i) == '[') {
-            token.type = TokenType::SQUARE_ROOT;
-
-            tokens.push_back(token);
-            continue;
-        }
-
-        if (code.at(i) == '|') {
-            token.type = TokenType::SPACE;
-
-            tokens.push_back(token);
-            continue;
+            noneMatch = false;
+            break;
         }
 
         if (isdigit(code.at(i))) {
@@ -87,14 +73,16 @@ vector<Token> tokenize(string code) {
             continue;
         }
 
-        cerr << "UNEXPECTED SYMBOL AT " << code.at(i) << " SHUTTING DOWN" << endl;
-        exit(404);
+        if (noneMatch) {
+            std::cerr << "UNEXPECTED SYMBOL AT " << code.at(i) << " SHUTTING DOWN" << std::endl;
+            exit(404);
+        }
     }
 
     return tokens;
 }
 
-int count(vector<Token> tokens, TokenType type) {
+int count(std::vector<Token> tokens, TokenType type) {
     switch (type) {
         case TokenType::FORWARD:
             return count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::FORWARD; });
@@ -113,13 +101,13 @@ int count(vector<Token> tokens, TokenType type) {
     }
 } 
 
-vector<string> getAllSpaces(string contents) {
-    vector<string> spliced;
-    string delimiter = "|";
+std::vector<std::string> getAllSpaces(std::string contents) {
+    std::vector<std::string> spliced;
+    std::string delimiter = "|";
     int pos = 0;
-    string token;
+    std::string token;
 
-    while ((pos = contents.find(delimiter)) != string::npos) {
+    while ((pos = contents.find(delimiter)) != std::string::npos) {
         token = contents.substr(0, pos);
         spliced.push_back(token);
         contents.erase(0, pos + delimiter.length());
@@ -127,17 +115,17 @@ vector<string> getAllSpaces(string contents) {
 
     spliced.push_back(contents);
 
-    vector<string> vectors;
+    std::vector<std::string> vectors;
 
-    for (string content : spliced) {
+    for (std::string content : spliced) {
         vectors.push_back(content);
     }
 
     return vectors;
 }
 
-vector<int> getAllDigits(vector<Token> tokens) {
-    vector<int> digits;
+std::vector<int> getAllDigits(std::vector<Token> tokens) {
+    std::vector<int> digits;
 
     for (Token token : tokens) {
         if (token.type != TokenType::DIGIT) {
@@ -150,7 +138,7 @@ vector<int> getAllDigits(vector<Token> tokens) {
     return digits;
 }
 
-double tokens_to_output(vector<Token> tokens) {
+double tokens_to_output(std::vector<Token> tokens) {
     double output = 0;
 
     int forward = count(tokens, TokenType::FORWARD);
@@ -171,7 +159,7 @@ double tokens_to_output(vector<Token> tokens) {
     }
 
     if (getAllDigits(tokens).size() > 0) {
-        vector<int> digits = getAllDigits(tokens);
+        std::vector<int> digits = getAllDigits(tokens);
 
         for (int i : digits) {
             output += i;
@@ -182,39 +170,39 @@ double tokens_to_output(vector<Token> tokens) {
 }
 
 int main(int argc, char * argv[]) {
-    string contents;
-    ifstream inputStream("code.abd");
+    std::string contents;
+    std::ifstream inputStream("code.abd");
 
     if (!inputStream) {
-        cerr << "Couldn't open the code.abd file." << endl;
+        std::cerr << "Couldn't open the code.abd file." << std::endl;
         exit(404);
     }
 
-    string line;
+    std::string line;
 
     while (getline(inputStream, line)) {
         contents += line;
     }
 
-    vector<string> spaces = getAllSpaces(contents);
+    std::vector<std::string> spaces = getAllSpaces(contents);
 
     if (spaces.size() >= 2) {
         int vectorCount = 0;
 
-        for (string str : spaces) {
+        for (std::string str : spaces) {
             vectorCount++;
 
-            cout << "(Part " << vectorCount << ") Output (char): " << (char) tokens_to_output(tokenize(str)) << endl;
-            cout << "(Part " << vectorCount << ") Output (int): " << tokens_to_output(tokenize(str)) << endl;
+            std::cout << "(Part " << vectorCount << ") Output (char): " << (char) tokens_to_output(tokenize(str)) << std::endl;
+            std::cout << "(Part " << vectorCount << ") Output (int): " << tokens_to_output(tokenize(str)) << std::endl;
         }
 
         return 0;
     }
 
-    const vector<Token> result = tokenize(contents);
+    const std::vector<Token> result = tokenize(contents);
 
-    cout << "Output (char): " << (char) tokens_to_output(result) << endl;
-    cout << "Output (int): " << tokens_to_output(result) << endl;
+    std::cout << "Output (char): " << (char) tokens_to_output(result) << std::endl;
+    std::cout << "Output (int): " << tokens_to_output(result) << std::endl;
 
     return 0;
 }
