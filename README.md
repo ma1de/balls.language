@@ -1,6 +1,6 @@
 # balls language
 idk lol
 
-# syntax: <br/>
+# syntax: 
 ">" - forward by 1 <br/>
 "<" - backward by 1 <br/>
