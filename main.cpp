@@ -49,7 +49,7 @@ int tokens_to_output(vector<Token> tokens) {
     output += forward;
     output -= backward;
 
-    return output + 1;
+    return output;
 }
 
 int main(void) {
