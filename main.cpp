@@ -47,10 +47,9 @@ std::vector<SyntaxToken> syntaxTokens = {
 std::vector<Token> tokenize(std::string code) {
     std::vector<Token> tokens;
 
-    bool noneMatch;
-
     for (int i = 0; i < code.length(); i++) {
         Token token;
+        bool noneMatch;
 
         for (SyntaxToken syntaxToken: syntaxTokens) {
             if (code.at(i) != syntaxToken.value) {
