@@ -20,4 +20,6 @@ jobs:
     - name: make check
       run: ./a.out
     - name: time check
-      run: time a.out
+      run: time ./a.out
+    - name: celebrate
+      run: echo yippie
