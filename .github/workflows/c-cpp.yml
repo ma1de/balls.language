@@ -19,3 +19,5 @@ jobs:
       run: g++ main.cpp
     - name: make check
       run: ./a.out
+    - name: time check
+      run: time a.out
