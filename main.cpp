@@ -43,8 +43,8 @@ vector<Token> tokenize(string code) {
 int tokens_to_output(vector<Token> tokens) {
     int output = 0;
 
-    int forward = std::count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::FORWARD; });
-    int backward = std::count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::BACKWARD; });
+    int forward = count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::FORWARD; });
+    int backward = count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::BACKWARD; });
 
     output += forward;
     output -= backward;
