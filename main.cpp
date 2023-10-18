@@ -8,6 +8,16 @@ using namespace std;
 
 #define ULL unsigned long long
 
+/**
+ * All the types of the tokens
+ * FORWARD - >
+ * BACKWARD - < 
+ * FORWARD_HALF - ;
+ * BACKWARD_HALF - :
+ * SQUARE - ^
+ * SQUARE_ROOT - [
+ * DIGIT - any number
+*/
 enum class TokenType {
     FORWARD,
     BACKWARD,
@@ -18,11 +28,19 @@ enum class TokenType {
     DIGIT
 };
 
+/**
+ * TokenType - type of the token
+ * value - integer value
+*/
 typedef struct {
     TokenType type;
     int value;
 } Token;
 
+/**
+ * we take a string of code and turn it into a vector of tokens
+ * by doing this
+*/
 vector<Token> tokenize(string code) {
     vector<Token> tokens;
 
@@ -86,6 +104,9 @@ vector<Token> tokenize(string code) {
     return tokens;
 }
 
+/**
+ * we're counting the tokens by type
+*/
 int count(vector<Token> tokens, TokenType type) {
     switch (type) {
         case TokenType::FORWARD:
@@ -105,6 +126,11 @@ int count(vector<Token> tokens, TokenType type) {
     }
 } 
 
+/**
+ * get all the digit type tokens and store their
+ * values into a vector of integers so we can
+ * use them when we're converting the code
+*/
 vector<int> getAllDigits(vector<Token> tokens) {
     vector<int> digits;
 
@@ -119,6 +145,9 @@ vector<int> getAllDigits(vector<Token> tokens) {
     return digits;
 }
 
+/**
+ * result
+*/
 ULL tokens_to_output(vector<Token> tokens) {
     int output = 0;
 
@@ -150,6 +179,9 @@ ULL tokens_to_output(vector<Token> tokens) {
     return output;
 }
 
+/**
+ * the main function
+*/
 int main(void) {
     string contents;
     ifstream inputStream("code.abd");
