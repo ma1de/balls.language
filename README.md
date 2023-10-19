@@ -9,7 +9,8 @@ idk lol
 "^" - the whole number to the power of n, where n is equal to the amount of the ^ symbols <br/>
 "[" - square root of the whole number <br/>
 "1" - digit <br/>
-"|" - space 
+" " - space <br/>
+"/" - divide the whole number by 2
 
 # example
 [here](https://github.com/ma1de/balls.language/blob/main/code.abd)
