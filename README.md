@@ -12,4 +12,4 @@ idk lol
 "|" - space 
 
 # example
-[here](https://github.com/ma1de/balls.language/blob/main/src/code.abd)
+[here](https://github.com/ma1de/balls.language/blob/main/code.abd)
