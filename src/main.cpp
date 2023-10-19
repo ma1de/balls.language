@@ -14,6 +14,7 @@ enum class TokenType {
     SQUARE,
     SQUARE_ROOT,
     DIGIT,
+    DIVIDE,
     SPACE
 };
 
@@ -41,6 +42,7 @@ vector<SyntaxToken> syntaxTokens = {
     SyntaxToken(TokenType::BACKWARD_HALF, ':'),
     SyntaxToken(TokenType::SQUARE, '^'),
     SyntaxToken(TokenType::SQUARE_ROOT, '['),
+    SyntaxToken(TokenType::DIVIDE, '/'),
     SyntaxToken(TokenType::SPACE, '|')
 };
 
@@ -95,6 +97,8 @@ int count(vector<Token> tokens, TokenType type) {
             return count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::SQUARE; });
         case TokenType::SQUARE_ROOT:
             return count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::SQUARE_ROOT; });
+        case TokenType::DIVIDE:
+            return count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::DIVIDE; });
         default:
             return 0;
     }
@@ -146,6 +150,7 @@ double tokens_to_output(vector<Token> tokens) {
     double backwardHalf = count(tokens, TokenType::BACKWARD_HALF) / 2.0;
     int square = count(tokens, TokenType::SQUARE);
     int squareRoot = count(tokens, TokenType::SQUARE_ROOT);
+    int divide = count(tokens, TokenType::DIVIDE);
 
     output = (forward + forwardHalf) - (backward + backwardHalf);
 
@@ -163,6 +168,10 @@ double tokens_to_output(vector<Token> tokens) {
         for (int i : digits) {
             output += i;
         }
+    }
+
+    if (divide > 0) {
+        output /= 2;
     }
 
     return output;
@@ -206,7 +215,6 @@ int main(int argc, char * argv[]) {
         for (string str : spaces) {
             vectorCount++;
 
-            cout << "(Part " << vectorCount << ") Output (char): " << (char) tokens_to_output(tokenize(str)) << endl;
             cout << "(Part " << vectorCount << ") Output (int): " << tokens_to_output(tokenize(str)) << endl;
         }
 
@@ -214,8 +222,7 @@ int main(int argc, char * argv[]) {
     }
 
     const vector<Token> result = tokenize(contents);
-
-    cout << "Output (char): " << (char) tokens_to_output(result) << endl;
+    
     cout << "Output (int): " << tokens_to_output(result) << endl;
 
     return 0;
