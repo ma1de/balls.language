@@ -13,9 +13,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: install gcc idk
-      run: sudo apt install gcc
+    - name: install make (if not present)
+      run: sudo apt install make
     - name: make
-      run: g++ main.cpp
-    - name: make check
+      run: make
+    - name: run the file
       run: ./a.out
