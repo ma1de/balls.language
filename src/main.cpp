@@ -43,7 +43,7 @@ vector<SyntaxToken> syntaxTokens = {
     SyntaxToken(TokenType::SQUARE, '^'),
     SyntaxToken(TokenType::SQUARE_ROOT, '['),
     SyntaxToken(TokenType::DIVIDE, '/'),
-    SyntaxToken(TokenType::SPACE, '|')
+    SyntaxToken(TokenType::SPACE, ' ')
 };
 
 vector<Token> tokenize(string code) {
@@ -106,7 +106,7 @@ int count(vector<Token> tokens, TokenType type) {
 
 vector<string> getAllSpaces(string contents) {
     vector<string> spliced;
-    string delimiter = "|";
+    string delimiter = " ";
     int pos = 0;
     string token;
 
@@ -222,7 +222,7 @@ int main(int argc, char * argv[]) {
     }
 
     const vector<Token> result = tokenize(contents);
-    
+
     cout << "Output (int): " << tokens_to_output(result) << endl;
 
     return 0;
