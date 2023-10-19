@@ -1,4 +1,4 @@
-#include <iostream>
+using namespace std;
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -34,7 +34,7 @@ struct SyntaxToken {
     };
 };
 
-std::vector<SyntaxToken> syntaxTokens = {
+vector<SyntaxToken> syntaxTokens = {
     SyntaxToken(TokenType::FORWARD, '>'),
     SyntaxToken(TokenType::BACKWARD, '<'),
     SyntaxToken(TokenType::FORWARD_HALF, ';'),
@@ -44,8 +44,8 @@ std::vector<SyntaxToken> syntaxTokens = {
     SyntaxToken(TokenType::SPACE, '|')
 };
 
-std::vector<Token> tokenize(std::string code) {
-    std::vector<Token> tokens;
+vector<Token> tokenize(string code) {
+    vector<Token> tokens;
 
     for (int i = 0; i < code.length(); i++) {
         Token token;
@@ -73,7 +73,7 @@ std::vector<Token> tokenize(std::string code) {
         }
 
         if (noneMatch) {
-            std::cerr << "UNEXPECTED SYMBOL AT " << code.at(i) << " SHUTTING DOWN" << std::endl;
+            cerr << "UNEXPECTED SYMBOL AT " << code.at(i) << " SHUTTING DOWN" << endl;
             exit(404);
         }
     }
@@ -81,7 +81,7 @@ std::vector<Token> tokenize(std::string code) {
     return tokens;
 }
 
-int count(std::vector<Token> tokens, TokenType type) {
+int count(vector<Token> tokens, TokenType type) {
     switch (type) {
         case TokenType::FORWARD:
             return count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::FORWARD; });
@@ -100,13 +100,13 @@ int count(std::vector<Token> tokens, TokenType type) {
     }
 } 
 
-std::vector<std::string> getAllSpaces(std::string contents) {
-    std::vector<std::string> spliced;
-    std::string delimiter = "|";
+vector<string> getAllSpaces(string contents) {
+    vector<string> spliced;
+    string delimiter = "|";
     int pos = 0;
-    std::string token;
+    string token;
 
-    while ((pos = contents.find(delimiter)) != std::string::npos) {
+    while ((pos = contents.find(delimiter)) != string::npos) {
         token = contents.substr(0, pos);
         spliced.push_back(token);
         contents.erase(0, pos + delimiter.length());
@@ -114,17 +114,17 @@ std::vector<std::string> getAllSpaces(std::string contents) {
 
     spliced.push_back(contents);
 
-    std::vector<std::string> vectors;
+    vector<string> vectors;
 
-    for (std::string content : spliced) {
+    for (string content : spliced) {
         vectors.push_back(content);
     }
 
     return vectors;
 }
 
-std::vector<int> getAllDigits(std::vector<Token> tokens) {
-    std::vector<int> digits;
+vector<int> getAllDigits(vector<Token> tokens) {
+    vector<int> digits;
 
     for (Token token : tokens) {
         if (token.type != TokenType::DIGIT) {
@@ -137,7 +137,7 @@ std::vector<int> getAllDigits(std::vector<Token> tokens) {
     return digits;
 }
 
-double tokens_to_output(std::vector<Token> tokens) {
+double tokens_to_output(vector<Token> tokens) {
     double output = 0;
 
     int forward = count(tokens, TokenType::FORWARD);
@@ -158,7 +158,7 @@ double tokens_to_output(std::vector<Token> tokens) {
     }
 
     if (getAllDigits(tokens).size() > 0) {
-        std::vector<int> digits = getAllDigits(tokens);
+        vector<int> digits = getAllDigits(tokens);
 
         for (int i : digits) {
             output += i;
@@ -168,40 +168,55 @@ double tokens_to_output(std::vector<Token> tokens) {
     return output;
 }
 
-int main(int argc, char * argv[]) {
-    std::string contents;
-    std::ifstream inputStream("code.abd");
+bool hasSuffix(string a, string suffix) {
+    return a.size() >= suffix.size() && a.compare(a.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
 
-    if (!inputStream) {
-        std::cerr << "Couldn't open the code.abd file." << std::endl;
+int main(int argc, char * argv[]) {
+    string fileName = "code.abd";
+
+    if (argv[1] != nullptr) {
+        fileName = argv[1];
+    }
+
+    if (!hasSuffix(fileName, ".abd")) {
+        cerr << "Only files that have the `.abd` extension are allowed." << endl;
         exit(404);
     }
 
-    std::string line;
+    string contents;
+    ifstream inputStream("code.abd");
+
+    if (!inputStream) {
+        cerr << "Couldn't open the code.abd file." << endl;
+        exit(404);
+    }
+
+    string line;
 
     while (getline(inputStream, line)) {
         contents += line;
     }
 
-    std::vector<std::string> spaces = getAllSpaces(contents);
+    vector<string> spaces = getAllSpaces(contents);
 
     if (spaces.size() >= 2) {
         int vectorCount = 0;
 
-        for (std::string str : spaces) {
+        for (string str : spaces) {
             vectorCount++;
 
-            std::cout << "(Part " << vectorCount << ") Output (char): " << (char) tokens_to_output(tokenize(str)) << std::endl;
-            std::cout << "(Part " << vectorCount << ") Output (int): " << tokens_to_output(tokenize(str)) << std::endl;
+            cout << "(Part " << vectorCount << ") Output (char): " << (char) tokens_to_output(tokenize(str)) << endl;
+            cout << "(Part " << vectorCount << ") Output (int): " << tokens_to_output(tokenize(str)) << endl;
         }
 
         return 0;
     }
 
-    const std::vector<Token> result = tokenize(contents);
+    const vector<Token> result = tokenize(contents);
 
-    std::cout << "Output (char): " << (char) tokens_to_output(result) << std::endl;
-    std::cout << "Output (int): " << tokens_to_output(result) << std::endl;
+    cout << "Output (char): " << (char) tokens_to_output(result) << endl;
+    cout << "Output (int): " << tokens_to_output(result) << endl;
 
     return 0;
 }
