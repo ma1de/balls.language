@@ -182,6 +182,11 @@ bool hasSuffix(string a, string suffix) {
 }
 
 int main(int argc, char * argv[]) {
+    cout << "===========================" << endl;
+    cout << "= BALLS.LANGUAGE COMPILER =" << endl;
+    cout << "===========================" << endl;
+    cout << "" << endl;
+
     string fileName = "code.abd";
 
     if (argv[1] != nullptr) {
