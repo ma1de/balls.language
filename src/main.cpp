@@ -4,7 +4,7 @@ using namespace std;
 #include <vector>
 #include <algorithm>
 #include <cmath>
-#include <ctype.h>
+#include <cctype>
 
 enum class TokenType {
     FORWARD,
@@ -27,8 +27,6 @@ struct SyntaxToken {
     TokenType type;
     char value;
 
-    SyntaxToken(){};
-
     SyntaxToken(TokenType init_type, char init_value) {
         type = init_type;
         value = init_value;
@@ -46,15 +44,15 @@ vector<SyntaxToken> syntaxTokens = {
     SyntaxToken(TokenType::SPACE, ' ')
 };
 
-vector<Token> tokenize(string code) {
+vector<Token> tokenize(const string& code) {
     vector<Token> tokens;
 
-    for (int i = 0; i < code.length(); i++) {
+    for (char i : code) {
         Token token;
         bool noneMatch;
 
         for (SyntaxToken syntaxToken: syntaxTokens) {
-            if (code.at(i) != syntaxToken.value) {
+            if (i != syntaxToken.value) {
                 noneMatch = true;
                 continue;
             }
@@ -66,16 +64,16 @@ vector<Token> tokenize(string code) {
             break;
         }
 
-        if (isdigit(code.at(i))) {
+        if (isdigit(i)) {
             token.type = TokenType::DIGIT;
-            token.value = code.at(i) - '0';
+            token.value = i - '0';
 
             tokens.push_back(token);
             continue;
         }
 
         if (noneMatch) {
-            cerr << "UNEXPECTED SYMBOL AT " << code.at(i) << " SHUTTING DOWN" << endl;
+            cerr << "UNEXPECTED SYMBOL AT " << i << " SHUTTING DOWN" << endl;
             exit(404);
         }
     }
@@ -120,14 +118,15 @@ vector<string> getAllSpaces(string contents) {
 
     vector<string> vectors;
 
-    for (string content : spliced) {
+    vectors.reserve(spliced.size());
+    for (const string& content : spliced) {
         vectors.push_back(content);
     }
 
     return vectors;
 }
 
-vector<int> getAllDigits(vector<Token> tokens) {
+vector<int> getAllDigits(const vector<Token>& tokens) {
     vector<int> digits;
 
     for (Token token : tokens) {
@@ -141,8 +140,8 @@ vector<int> getAllDigits(vector<Token> tokens) {
     return digits;
 }
 
-double tokens_to_output(vector<Token> tokens) {
-    double output = 0;
+double tokens_to_output(const vector<Token>& tokens) {
+    double output;
 
     int forward = count(tokens, TokenType::FORWARD);
     int backward = count(tokens, TokenType::BACKWARD);
@@ -162,7 +161,7 @@ double tokens_to_output(vector<Token> tokens) {
         output = sqrt(output);
     }
 
-    if (getAllDigits(tokens).size() > 0) {
+    if (!getAllDigits(tokens).empty()) {
         vector<int> digits = getAllDigits(tokens);
 
         for (int i : digits) {
@@ -177,11 +176,11 @@ double tokens_to_output(vector<Token> tokens) {
     return output;
 }
 
-bool hasSuffix(string a, string suffix) {
+bool hasSuffix(const string& a, const string& suffix) {
     return a.size() >= suffix.size() && a.compare(a.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
-int main(int argc, char * argv[]) {
+int main([[maybe_unused]] int argc, char * argv[]) {
     cout << "[]==========================[]" << endl;
     cout << "[  BALLS.LANGUAGE COMPILER   ]" << endl;
     cout << "[]==========================[]" << endl;
@@ -217,7 +216,7 @@ int main(int argc, char * argv[]) {
     if (spaces.size() >= 2) {
         int vectorCount = 0;
 
-        for (string str : spaces) {
+        for (const string& str : spaces) {
             vectorCount++;
 
             cout << "(Part " << vectorCount << ") Output (int): " << tokens_to_output(tokenize(str)) << endl;
