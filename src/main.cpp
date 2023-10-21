@@ -15,6 +15,7 @@ enum class TokenType {
     SQUARE_ROOT,
     DIGIT,
     DIVIDE,
+    FACTORIAL,
     SPACE
 };
 
@@ -41,6 +42,7 @@ vector<SyntaxToken> syntaxTokens = {
     SyntaxToken(TokenType::SQUARE, '^'),
     SyntaxToken(TokenType::SQUARE_ROOT, '['),
     SyntaxToken(TokenType::DIVIDE, '/'),
+    SyntaxToken(TokenType::FACTORIAL, '!'),
     SyntaxToken(TokenType::SPACE, ' ')
 };
 
@@ -97,6 +99,8 @@ int count(vector<Token> tokens, TokenType type) {
             return count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::SQUARE_ROOT; });
         case TokenType::DIVIDE:
             return count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::DIVIDE; });
+        case TokenType::FACTORIAL:
+            return count_if(tokens.begin(), tokens.end(), [](Token a) { return a.type == TokenType::FACTORIAL; });
         default:
             return 0;
     }
@@ -140,6 +144,23 @@ vector<int> getAllDigits(const vector<Token>& tokens) {
     return digits;
 }
 
+double factorial(double number) {
+    double current = number;
+    double result = number;
+
+    for (int i = 0; i < number; i++) {
+        current -= 1;
+
+        if (current == 0) {
+            break;
+        }
+
+        result *= current;
+    }
+
+    return result;
+}
+
 double tokens_to_output(const vector<Token>& tokens) {
     double output;
 
@@ -150,6 +171,7 @@ double tokens_to_output(const vector<Token>& tokens) {
     int square = count(tokens, TokenType::SQUARE);
     int squareRoot = count(tokens, TokenType::SQUARE_ROOT);
     int divide = count(tokens, TokenType::DIVIDE);
+    int factor = count(tokens, TokenType::FACTORIAL);
 
     output = (forward + forwardHalf) - (backward + backwardHalf);
 
@@ -173,6 +195,10 @@ double tokens_to_output(const vector<Token>& tokens) {
         output /= 2;
     }
 
+    if (factor > 0) {
+        output = factorial(output);
+    }
+
     return output;
 }
 
@@ -185,6 +211,8 @@ int main([[maybe_unused]] int argc, char * argv[]) {
     cout << "[  BALLS.LANGUAGE COMPILER   ]" << endl;
     cout << "[]==========================[]" << endl;
     cout << "" << endl;
+
+    cout << factorial(3) << endl;
 
     string fileName = "code.abd";
 

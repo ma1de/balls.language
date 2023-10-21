@@ -10,7 +10,8 @@ idk lol
 "[" - square root of the whole number <br/>
 "1" - digit <br/>
 " " - space <br/>
-"/" - divide the whole number by 2
+"/" - divide the whole number by 2 <br/>
+"!" - factorial
 
 # example
 [here](https://github.com/ma1de/balls.language/blob/main/code.abd)
